@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <form>
+      <label>Video id:</label>
+      <input type="text" id="caja" />
+      <button id="boton">buscar comentarios</button>
+    </form>
+    <div id="comentarios">
+    </div>
+    <script type="text/javascript">
+      var caja = document.getElementById('caja');
+      var boton = document.getElementById('boton');
+      var comentarios = document.getElementById('comentarios');
+
+      const getContent = function(item) {
+        if (item.snippet && item.snippet.topLevelComment && item.snippet.topLevelComment.snippet) {
+          var comment = item.snippet.topLevelComment.snippet;
+          return '<h3>' + comment.authorDisplayName + '</h3><p>' + comment.textDisplay + '</p>';
+        } else {
+          return '';
+        }
+      }
+
+      boton.addEventListener('click', function(e) {
+        e.preventDefault();
+        var videoId = caja.value;
+        if (videoId) {
+          fetch('/get-comments/' + videoId)
+          .then(function(res) {
+            return res.json();
+          })
+          .then(function(data) {
+            if (data.items) {
+              var content = '';
+              data.items.forEach(function(item, key) {
+                content += getContent(item);
+              });
+              comentarios.innerHTML = content;
+            }
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
