@@ -6,17 +6,33 @@
   "scripts": {
     "start": "node server.js",
     "develop": "nodemon server.js",
+    "build": "webpack --colors --progress --config webpack.config.dev.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "node-env-file": "^0.1.8",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^2.3.0",
+    "path": "^0.12.7",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.10"
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-env": "^7.4.3",
+    "css-loader": "^2.1.1",
+    "mini-css-extract-plugin": "^0.6.0",
+    "node-sass": "^4.11.0",
+    "nodemon": "^1.18.10",
+    "sass-loader": "^7.1.0"
   }
 }

@@ -12,6 +12,9 @@ const getComments = require('./utility/getComments')
 *** App configuration ***
 *************************/
 
+// Static files folder.
+app.use(express.static('build'))
+
 // Set the the views directory.
 app.set('views', './views')
 
@@ -21,6 +24,10 @@ app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
   return res.render('index', {})
+})
+
+app.get('/react', (req, res) => {
+  return res.render('react', {})
 })
 
 app.get('/get-comments/:videoId', (req, res) => {
