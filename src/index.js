@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
-
+import { Header, Icon, Segment, Comment as CommentUI } from 'semantic-ui-react'
+import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
+
+console.log(Comment)
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
       videoId: '',
-      comments: []
+      comments: [],
     }
   }
 
@@ -21,24 +24,25 @@ class App extends Component {
   getContent = (item) => {
     if (item.snippet && item.snippet.topLevelComment && item.snippet.topLevelComment.snippet) {
       var comment = item.snippet.topLevelComment.snippet;
-      return { 
+      return {
         name: comment.authorDisplayName,
         text: comment.textDisplay,
+        avatar: comment.authorProfileImageUrl,
+        published: comment.publishedAt,
       }
     } else {
       return {};
     }
   }
 
-  searchComments = () => {
-    const { videoId } = this.state;
+  searchComments = (videoId) => {
     fetch('/get-comments/' + videoId)
       .then((res) => {
         return res.json()
       })
       .then((data) => {
         if (data.items) {
-          var content = []
+          let content = []
           data.items.forEach((item, key) => {
             content.push(this.getContent(item))
           });
@@ -54,17 +58,29 @@ class App extends Component {
     const { videoId, comments } = this.state
     return (
       <div>
-        <label>Video id:</label>
-        <input value={videoId} onChange={this.inputChange} />
-        <button onClick={this.searchComments}>buscar comentarios</button>
-        <div>
-          {comments.map((comment, key) => <Comment name={comment.name} text={comment.text} />)}
-        </div>
+        <Segment placeholder inverted>
+          <Header icon>
+            <Icon name='search' />
+            Ingresa el videoId y obten los comentarios del video.
+          </Header>
+          <Segment.Inline>
+            <SearchBar placeholder="Video Id" onClick={this.searchComments}/>
+          </Segment.Inline>
+        </Segment>
+        <CommentUI.Group>
+          {comments.map((comment, key, avatar, published) => (
+            <Comment
+              name={comment.name}
+              text={comment.text}
+              avatar={comment.avatar}
+              published={comment.published}
+            />
+          ))}
+        </CommentUI.Group>
       </div>
     )
   }
 }
-
 const container = document.getElementById('app')
 
 ReactDom.hydrate(<App />, container)

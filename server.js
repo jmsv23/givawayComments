@@ -21,12 +21,7 @@ app.set('views', './views')
 // Define the template engine.
 app.set('view engine', 'ejs')
 
-
 app.get('/', (req, res) => {
-  return res.render('index', {})
-})
-
-app.get('/react', (req, res) => {
   return res.render('react', {})
 })
 

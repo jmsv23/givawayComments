@@ -1,14 +1,21 @@
 import React, { Component } from 'react'
-import styles from './styles/Comment.module.scss'
+import { Comment as CommentUI } from 'semantic-ui-react'
+
 
 export default class Comment extends Component {
   render() {
-    const { name, text } = this.props
+    const { name, text, published, avatar } = this.props
     return (
-      <div className={styles.wrapper}>
-        <h1>{name}</h1>
-        <p>{text}</p>
-      </div>
+      <CommentUI>
+        <CommentUI.Avatar src={avatar} />
+        <CommentUI.Content>
+          <CommentUI.Author as='a'>{name}</CommentUI.Author>
+          <CommentUI.Metadata>
+            <div>{published}</div>
+          </CommentUI.Metadata>
+          <CommentUI.Text>{text}</CommentUI.Text>
+        </CommentUI.Content>
+      </CommentUI>
     )
   }
 }
