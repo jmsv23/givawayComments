@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
 
+import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
 
 class App extends Component {
@@ -54,6 +55,7 @@ class App extends Component {
     const { videoId, comments } = this.state
     return (
       <div>
+        <SearchBar placeholder="Video Id" />
         <label>Video id:</label>
         <input value={videoId} onChange={this.inputChange} />
         <button onClick={this.searchComments}>buscar comentarios</button>
