@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
-import { Grid, Header, Icon, Segment, Comment as CommentUI } from 'semantic-ui-react'
+import { Grid, Header, Icon, Segment, Message, Comment as CommentUI } from 'semantic-ui-react'
 import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
 
@@ -11,7 +11,8 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      comments: []
+      comments: [],
+      modalError: false
     }
   }
 
@@ -43,11 +44,7 @@ class App extends Component {
     return matches[1]
   }
 
-  searchComments = (url) => {
-    const videoId = this.getVideoID(url)
-
-    if (!videoId) return null;
-
+  searchComments = (videoId) => {
     fetch('/get-comments/' + videoId)
       .then((res) => {
         return res.json()
@@ -66,18 +63,36 @@ class App extends Component {
       });
   }
 
+  onCLick = (url) => {
+    const videoId = this.getVideoID(url)
+
+    if (!videoId) {
+      return this.setState({ modalError: true })
+    } else {
+      this.setState({ modalError: false })
+    }
+    this.searchComments(videoId)
+  }
+
+  cerrarVentana = () => (this.setState({ modalError: False }))
+
   render() {
-    const { comments } = this.state
+    const { comments, modalError } = this.state
     return (
       <div>
         <Segment placeholder inverted>
           <Header icon>
             <Icon name='search' />
-            Ingresa el videoId y obten los comentarios del video.
+            Copia la url del video que deseas obtener los comentarios.
           </Header>
           <Segment.Inline>
-            <SearchBar placeholder="Video Id" onClick={this.searchComments}/>
+            <SearchBar placeholder="Video Id" onClick={this.onCLick}/>
           </Segment.Inline>
+          {modalError && (
+            <Message negative>
+              <Message.Header>Introduce una url valida</Message.Header>
+            </Message>
+          )}
         </Segment>
         <Grid centered>
           <CommentUI.Group>
