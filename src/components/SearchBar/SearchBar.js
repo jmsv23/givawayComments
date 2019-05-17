@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Input, Button } from 'semantic-ui-react'
+import PropTypes from 'prop-types';
+import { Input } from 'semantic-ui-react'
 
 export default class SearchBar extends Component {
   static propTypes = {
@@ -9,20 +9,17 @@ export default class SearchBar extends Component {
   }
 
   static defaultProps = {
-    placeholder: 'Search..',
-    onClick: () => {}
+    placeholder: 'Search...',
+    onClick: () => {},
   }
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      input: ''
+      input: '',
     }
   }
-  change = (e) => {
-    const { value } = e.target;
-    this.setState({ input: value })
-  }
+
   onClick = () => {
     const {
       input,
@@ -35,7 +32,7 @@ export default class SearchBar extends Component {
     } = this.props
     return (
       <Input
-       onChange={this.change}
+       onChange={(e) => { this.setState({ input: e.target.value })}}
        placeholder={placeholder}
        action={{
          icon: 'search',

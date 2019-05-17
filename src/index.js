@@ -11,8 +11,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      videoId: '',
-      comments: [],
+      comments: []
     }
   }
 
@@ -23,11 +22,11 @@ class App extends Component {
 
   getContent = (item) => {
     if (item.snippet && item.snippet.topLevelComment && item.snippet.topLevelComment.snippet) {
-      var comment = item.snippet.topLevelComment.snippet;
+      var comment = item.snippet.topLevelComment.snippet
       return {
+        avatar: comment.authorProfileImageUrl,
         name: comment.authorDisplayName,
         text: comment.textDisplay,
-        avatar: comment.authorProfileImageUrl,
         published: comment.publishedAt,
       }
     } else {
@@ -55,7 +54,7 @@ class App extends Component {
   }
 
   render() {
-    const { videoId, comments } = this.state
+    const { comments } = this.state
     return (
       <div>
         <Segment placeholder inverted>
@@ -69,7 +68,7 @@ class App extends Component {
         </Segment>
         <Grid centered>
           <CommentUI.Group>
-            {comments.map((comment, key, avatar, published) => (
+            {comments.map((comment) => (
               <Comment
                 name={comment.name}
                 text={comment.text}
