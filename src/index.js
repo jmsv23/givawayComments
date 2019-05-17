@@ -34,7 +34,20 @@ class App extends Component {
     }
   }
 
-  searchComments = (videoId) => {
+  getVideoID = (url) => {
+    const regex = /.*youtube\.com.*v=(.+)|[&].*?/
+    const matches = url.match(regex)
+
+    if (!matches) return false;
+
+    return matches[1]
+  }
+
+  searchComments = (url) => {
+    const videoId = this.getVideoID(url)
+
+    if (!videoId) return null;
+
     fetch('/get-comments/' + videoId)
       .then((res) => {
         return res.json()
