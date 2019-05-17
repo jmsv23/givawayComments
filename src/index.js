@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
-import { Header, Icon, Segment, Comment as CommentUI } from 'semantic-ui-react'
+import { Grid, Header, Icon, Segment, Comment as CommentUI } from 'semantic-ui-react'
 import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
 
@@ -67,16 +67,18 @@ class App extends Component {
             <SearchBar placeholder="Video Id" onClick={this.searchComments}/>
           </Segment.Inline>
         </Segment>
-        <CommentUI.Group>
-          {comments.map((comment, key, avatar, published) => (
-            <Comment
-              name={comment.name}
-              text={comment.text}
-              avatar={comment.avatar}
-              published={comment.published}
-            />
-          ))}
-        </CommentUI.Group>
+        <Grid centered>
+          <CommentUI.Group>
+            {comments.map((comment, key, avatar, published) => (
+              <Comment
+                name={comment.name}
+                text={comment.text}
+                avatar={comment.avatar}
+                published={comment.published}
+              />
+            ))}
+          </CommentUI.Group>
+        </Grid>
       </div>
     )
   }
