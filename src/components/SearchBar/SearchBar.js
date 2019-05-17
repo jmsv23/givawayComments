@@ -24,27 +24,21 @@ export default class SearchBar extends Component {
     const {
       input,
     } = this.state
-
     this.props.onClick(input)
   }
-
   render() {
     const {
       placeholder,
     } = this.props
-    const {
-      input,
-    } = this.state
-
     return (
       <Input
-        placeholder={placeholder}
-        onChange={(e) => { this.setState({ input: e.target.value })}}
-        action={{
-          color: 'teal',
-          icon: 'search',
-          onClick: this.onClick,
-        }}
+       onChange={(e) => { this.setState({ input: e.target.value })}}
+       placeholder={placeholder}
+       action={{
+         icon: 'search',
+         color: 'teal',
+         onClick: this.onClick,
+       }}
       />
     )
   }

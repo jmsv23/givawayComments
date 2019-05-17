@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
-import { Segment, Header, Icon, Comment as CommentUI } from 'semantic-ui-react'
-
+import { Grid, Header, Icon, Segment, Comment as CommentUI } from 'semantic-ui-react'
 import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
+
+console.log(Comment)
 
 class App extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class App extends Component {
       })
       .then((data) => {
         if (data.items) {
-          var content = []
+          let content = []
           data.items.forEach((item, key) => {
             content.push(this.getContent(item))
           });
@@ -59,27 +60,28 @@ class App extends Component {
         <Segment placeholder inverted>
           <Header icon>
             <Icon name='search' />
-            Ingresa el youtube video ID y obten todos los comentarios.
+            Ingresa el videoId y obten los comentarios del video.
           </Header>
           <Segment.Inline>
-            <SearchBar placeholder="Video Id" onClick={this.searchComments} />
+            <SearchBar placeholder="Video Id" onClick={this.searchComments}/>
           </Segment.Inline>
         </Segment>
-        <CommentUI.Group>
-          {comments.map((comment, key) => (
-            <Comment
-              avatar={comment.avatar}
-              name={comment.name}
-              text={comment.text}
-              published={comment.published} 
-            />
-          ))}
-        </CommentUI.Group>
+        <Grid centered>
+          <CommentUI.Group>
+            {comments.map((comment) => (
+              <Comment
+                name={comment.name}
+                text={comment.text}
+                avatar={comment.avatar}
+                published={comment.published}
+              />
+            ))}
+          </CommentUI.Group>
+        </Grid>
       </div>
     )
   }
 }
-
 const container = document.getElementById('app')
 
 ReactDom.hydrate(<App />, container)
