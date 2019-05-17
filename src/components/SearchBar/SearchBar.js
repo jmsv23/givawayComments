@@ -6,11 +6,13 @@ export default class SearchBar extends Component {
   static propTypes = {
     placeholder: PropTypes.string,
     onClick: PropTypes.func,
+    onChange: PropTypes.func,
   }
 
   static defaultProps = {
     placeholder: 'Search...',
     onClick: () => {},
+    onChange: () => {},
   }
 
   constructor(props) {
@@ -26,19 +28,20 @@ export default class SearchBar extends Component {
     } = this.state
     this.props.onClick(input)
   }
+
+  onChange = (e) => {
+    this.setState({ input: e.target.value })
+    this.props.onChange(e.target.value)
+  }
+
   render() {
     const {
       placeholder,
     } = this.props
     return (
       <Input
-       onChange={(e) => { this.setState({ input: e.target.value })}}
+       onChange={this.onChange}
        placeholder={placeholder}
-       action={{
-         icon: 'search',
-         color: 'teal',
-         onClick: this.onClick,
-       }}
       />
     )
   }
