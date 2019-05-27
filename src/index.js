@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
-import { Grid, Header, Icon, Segment, Message, Comment as CommentUI } from 'semantic-ui-react'
+import moment from 'moment'
+import { Button, Card, Image, Grid, Header, Icon, Segment, Message, Comment as CommentUI } from 'semantic-ui-react'
 import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
 
@@ -12,7 +13,11 @@ class App extends Component {
     super(props)
     this.state = {
       comments: [],
-      modalError: false
+      modalError: false,
+      ejecutarFuncion: false,
+      imagenVideo: '',
+      tituloVideo: '',
+      fechaSubido: ''
     }
   }
 
@@ -63,6 +68,33 @@ class App extends Component {
       });
   }
 
+  searchData = (videoId) => {
+    fetch('get-video-data/' + videoId)
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+          if(data.items[0].snippet) {
+            this.setState({ imagenVideo: data.items[0].snippet.thumbnails.high.url })
+            this.setState({ tituloVideo: data.items[0].snippet.title })
+            this.setState({ fechaSubido: data.items[0].snippet.publishedAt })
+          }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  onChange = (url) => {
+    const videoId = this.getVideoID(url)
+    if(videoId) {
+      this.setState({ ejecutarFuncion: true })
+    }  else {
+      return this.setState({ ejecutarFuncion: false })
+    }
+    this.searchData(videoId)
+  }
+
   onCLick = (url) => {
     const videoId = this.getVideoID(url)
 
@@ -77,7 +109,7 @@ class App extends Component {
   cerrarVentana = () => (this.setState({ modalError: False }))
 
   render() {
-    const { comments, modalError } = this.state
+    const { comments, modalError, ejecutarFuncion, imagenVideo, tituloVideo, fechaSubido} = this.state
     return (
       <div>
         <Segment placeholder inverted>
@@ -86,7 +118,7 @@ class App extends Component {
             Copia la url del video que deseas obtener los comentarios.
           </Header>
           <Segment.Inline>
-            <SearchBar placeholder="Video Id" onClick={this.onCLick}/>
+            <SearchBar placeholder="Url de Youtube" onClick={this.onCLick} onChange={this.onChange}/>
           </Segment.Inline>
           {modalError && (
             <Message negative>
@@ -94,6 +126,19 @@ class App extends Component {
             </Message>
           )}
         </Segment>
+        {ejecutarFuncion && (
+          <Grid centered>
+            <Card>
+              <Image src={imagenVideo} wrapped ui={false} />
+              <Card.Content>
+                <Card.Header>{tituloVideo}</Card.Header>
+                <Card.Meta>
+                  <span className='date'>{moment(fechaSubido).fromNow()}</span>
+                </Card.Meta>
+              </Card.Content>
+            </Card>
+          </Grid>
+        )}
         <Grid centered>
           <CommentUI.Group>
             {comments.map((comment) => (
