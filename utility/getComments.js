@@ -7,7 +7,7 @@ const getComments = (videoId, token) => {
   const apiKey = process.env.API_KEY || ''
   const format = 'plainText'
   const part = 'snippet,replies'
-  return fetch(`${url}?key=${apiKey}&${token ? 'pageToken=' + token + '&' : ''}textFormat=${format}&part=${part}&order=time&videoId=${videoId}`)
+  return fetch(`${url}?key=${apiKey}&${token ? 'pageToken=' + token + '&' : ''}textFormat=${format}&part=${part}&order=time&maxResults=100&videoId=${videoId}`)
   .then((response) => {
     return response.json()
   })
