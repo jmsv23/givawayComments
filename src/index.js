@@ -13,6 +13,7 @@ class App extends Component {
     super(props)
     this.state = {
       comments: [],
+      modalError: false,
       videoData: null,
     }
   }
@@ -93,18 +94,25 @@ class App extends Component {
       });
   }
 
+  cerrarVentana = () => (this.setState({ modalError: False }))
+
   render() {
-    const { comments, videoData } = this.state
+    const { comments, videoData, modalError} = this.state
     return (
       <Fragment>
         <Segment placeholder inverted>
           <Header icon>
             <Icon name='search' />
-            Ingresa el videoId y obten los comentarios del video.
+            Copia la url del video que deseas obtener los comentarios.
           </Header>
           <Segment.Inline>
-            <SearchBar placeholder="Video Id" onChange={this.onBoxChange} onClick={this.searchComments}/>
+            <SearchBar placeholder="Url de Youtube" onChange={this.onBoxChange}/>
           </Segment.Inline>
+          {modalError && (
+            <Message negative>
+              <Message.Header>Introduce una url valida</Message.Header>
+            </Message>
+          )}
         </Segment>
         <Container>
           <Grid centered>

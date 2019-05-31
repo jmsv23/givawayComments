@@ -6,7 +6,7 @@ export default class SearchBar extends Component {
   static propTypes = {
     placeholder: PropTypes.string,
     onClick: PropTypes.func,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func
   }
 
   static defaultProps = {
