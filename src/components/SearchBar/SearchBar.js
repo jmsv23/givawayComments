@@ -42,11 +42,6 @@ export default class SearchBar extends Component {
       <Input
        onChange={this.onChange}
        placeholder={placeholder}
-       action={{
-         icon: 'search',
-         color: 'teal',
-         onClick: this.onClick,
-       }}
       />
     )
   }

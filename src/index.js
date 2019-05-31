@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
 import moment from 'moment'
-import { Button, Card, Image, Grid, Header, Icon, Segment, Message, Comment as CommentUI } from 'semantic-ui-react'
+import { Card, Container, Grid, Header, Icon, Image, Segment, Comment as CommentUI } from 'semantic-ui-react'
 import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
 
@@ -14,9 +14,8 @@ class App extends Component {
     this.state = {
       comments: [],
       modalError: false,
-      ejecutarFuncion: false,
-      video: null
-      }
+      videoData: null,
+    }
   }
 
   inputChange = (e) => {
@@ -47,6 +46,35 @@ class App extends Component {
     return matches[1]
   }
 
+  onBoxChange = (value) => {
+    const videoId = this.getVideoID(value)
+    if (videoId) {
+      this.getVideoData(videoId)
+      this.searchComments(videoId)
+    } else {
+      this.setState({ videoData: null })
+    }
+  }
+
+  getVideoData = (videoId) => {
+    fetch('/get-video-data/' + videoId)
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        return data.items
+      })
+      .then((items) => {
+        if (items[0]) {
+          const { snippet } = items[0]
+          this.setState({ videoData: snippet })
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      });
+  }
+
   searchComments = (videoId) => {
     fetch('/get-comments/' + videoId)
       .then((res) => {
@@ -66,59 +94,19 @@ class App extends Component {
       });
   }
 
-  searchData = (videoId) => {
-    fetch('get-video-data/' + videoId)
-      .then((res) => {
-        return res.json()
-      })
-      .then((data) => {
-          if(data.items[0].snippet) {
-            const video = {
-              imagenVideo: data.items[0].snippet.thumbnails.high.url,
-              tituloVideo: data.items[0].snippet.title,
-              fechaSubido: data.items[0].snippet.publishedAt
-            }
-            this.setState({ video })
-          }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-
-  onChange = (url) => {
-    const videoId = this.getVideoID(url)
-    if(videoId) {
-      this.searchData(videoId)
-    }  else {
-      this.setState({ video: null })
-    }
-  }
-
-  onCLick = (url) => {
-    const videoId = this.getVideoID(url)
-
-    if (!videoId) {
-      return this.setState({ modalError: true })
-    } else {
-      this.setState({ modalError: false })
-    }
-    this.searchComments(videoId)
-  }
-
   cerrarVentana = () => (this.setState({ modalError: False }))
 
   render() {
-    const { comments, modalError, ejecutarFuncion, video} = this.state
+    const { comments, videoData, modalError} = this.state
     return (
-      <div>
+      <Fragment>
         <Segment placeholder inverted>
           <Header icon>
             <Icon name='search' />
             Copia la url del video que deseas obtener los comentarios.
           </Header>
           <Segment.Inline>
-            <SearchBar placeholder="Url de Youtube" onClick={this.onCLick} onChange={this.onChange}/>
+            <SearchBar placeholder="Url de Youtube" onChange={this.onBoxChange}/>
           </Segment.Inline>
           {modalError && (
             <Message negative>
@@ -126,32 +114,42 @@ class App extends Component {
             </Message>
           )}
         </Segment>
-        {video && (
+        <Container>
           <Grid centered>
-            <Card>
-              <Image src={video.imagenVideo} wrapped ui={false} />
-              <Card.Content>
-                <Card.Header>{video.tituloVideo}</Card.Header>
-                <Card.Meta>
-                  <span className='date'>{moment(video.fechaSubido).fromNow()}</span>
-                </Card.Meta>
-              </Card.Content>
-            </Card>
+            {videoData && (
+              <Grid.Row centered>
+                <Grid.Column textAlign="center" mobile={16} computer={6} >
+                  <Card.Group centered>
+                    <Card>
+                      <Image src={videoData.thumbnails.standard.url} wrapped ui={false} />
+                      <Card.Content>
+                        <Card.Header>{videoData.localized.title}</Card.Header>
+                        <Card.Meta>
+                          <span className='date'>{moment(videoData.publishedAt).fromNow()}</span>
+                        </Card.Meta>
+                      </Card.Content>
+                    </Card>
+                  </Card.Group>
+                </Grid.Column>
+              </Grid.Row>
+            )}
+            <Grid.Row centered>
+              <Grid.Column mobile={16} tablet={14} computer={10}>
+                <CommentUI.Group centered>
+                  {comments.map((comment) => (
+                    <Comment
+                      name={comment.name}
+                      text={comment.text}
+                      avatar={comment.avatar}
+                      published={comment.published}
+                    />
+                  ))}
+                </CommentUI.Group>
+              </Grid.Column>
+            </Grid.Row>
           </Grid>
-        )}
-        <Grid centered>
-          <CommentUI.Group>
-            {comments.map((comment) => (
-              <Comment
-                name={comment.name}
-                text={comment.text}
-                avatar={comment.avatar}
-                published={comment.published}
-              />
-            ))}
-          </CommentUI.Group>
-        </Grid>
-      </div>
+        </Container>
+      </Fragment>
     )
   }
 }
