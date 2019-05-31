@@ -74,8 +74,8 @@ class App extends Component {
       });
   }
 
-  searchComments = (videoId) => {
-    fetch('/get-comments/' + videoId)
+  searchComments = (videoId, token) => {
+    fetch('/get-comments/' + videoId + (token ? '?token=' + token : ''))
       .then((res) => {
         return res.json()
       })
@@ -85,7 +85,10 @@ class App extends Component {
           data.items.forEach((item, key) => {
             content.push(this.getContent(item))
           });
-          this.setState({ comments: content })
+          this.setState({ comments: this.state.comments.concat(content) })
+        }
+        if(data.nextPageToken) {
+          this.searchComments(videoId, data.nextPageToken)
         }
       })
       .catch((error) => {
@@ -124,7 +127,7 @@ class App extends Component {
                       <Card.Content>
                         <Card.Header>{videoData.localized.title}</Card.Header>
                         <Card.Meta>
-                          <span className='date'>{moment(videoData.publishedAt).fromNow()}</span>
+                          <span className='date'>{moment(videoData.publishedAt).fromNow()} - {comments.length}</span>
                         </Card.Meta>
                       </Card.Content>
                     </Card>

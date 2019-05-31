@@ -28,7 +28,8 @@ app.get('/', (req, res) => {
 
 app.get('/get-comments/:videoId', (req, res) => {
   const { videoId } = req.params
-  getComments(videoId)
+  const token = req.query.token || null 
+  getComments(videoId, token)
   .then(data => {
     return res.json(data)
   })
