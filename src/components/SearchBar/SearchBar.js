@@ -11,7 +11,6 @@ export default class SearchBar extends Component {
 
   static defaultProps = {
     placeholder: 'Search...',
-    onClick: () => {},
     onChange: () => {},
   }
 
@@ -20,13 +19,6 @@ export default class SearchBar extends Component {
     this.state = {
       input: '',
     }
-  }
-
-  onClick = () => {
-    const {
-      input,
-    } = this.state
-    this.props.onClick(input)
   }
 
   onChange = (e) => {
