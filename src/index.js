@@ -15,10 +15,8 @@ class App extends Component {
       comments: [],
       modalError: false,
       ejecutarFuncion: false,
-      imagenVideo: '',
-      tituloVideo: '',
-      fechaSubido: ''
-    }
+      video: null
+      }
   }
 
   inputChange = (e) => {
@@ -75,9 +73,12 @@ class App extends Component {
       })
       .then((data) => {
           if(data.items[0].snippet) {
-            this.setState({ imagenVideo: data.items[0].snippet.thumbnails.high.url })
-            this.setState({ tituloVideo: data.items[0].snippet.title })
-            this.setState({ fechaSubido: data.items[0].snippet.publishedAt })
+            const video = {
+              imagenVideo: data.items[0].snippet.thumbnails.high.url,
+              tituloVideo: data.items[0].snippet.title,
+              fechaSubido: data.items[0].snippet.publishedAt
+            }
+            this.setState({ video })
           }
       })
       .catch((error) => {
@@ -88,11 +89,10 @@ class App extends Component {
   onChange = (url) => {
     const videoId = this.getVideoID(url)
     if(videoId) {
-      this.setState({ ejecutarFuncion: true })
+      this.searchData(videoId)
     }  else {
-      return this.setState({ ejecutarFuncion: false })
+      this.setState({ video: null })
     }
-    this.searchData(videoId)
   }
 
   onCLick = (url) => {
@@ -109,7 +109,7 @@ class App extends Component {
   cerrarVentana = () => (this.setState({ modalError: False }))
 
   render() {
-    const { comments, modalError, ejecutarFuncion, imagenVideo, tituloVideo, fechaSubido} = this.state
+    const { comments, modalError, ejecutarFuncion, video} = this.state
     return (
       <div>
         <Segment placeholder inverted>
@@ -126,14 +126,14 @@ class App extends Component {
             </Message>
           )}
         </Segment>
-        {ejecutarFuncion && (
+        {video && (
           <Grid centered>
             <Card>
-              <Image src={imagenVideo} wrapped ui={false} />
+              <Image src={video.imagenVideo} wrapped ui={false} />
               <Card.Content>
-                <Card.Header>{tituloVideo}</Card.Header>
+                <Card.Header>{video.tituloVideo}</Card.Header>
                 <Card.Meta>
-                  <span className='date'>{moment(fechaSubido).fromNow()}</span>
+                  <span className='date'>{moment(video.fechaSubido).fromNow()}</span>
                 </Card.Meta>
               </Card.Content>
             </Card>
