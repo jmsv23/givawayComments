@@ -2,11 +2,10 @@ import React, { Component, Fragment } from 'react'
 import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
 import moment from 'moment'
+import debounce from 'debounce'
 import { Card, Container, Grid, Header, Icon, Image, Segment, Comment as CommentUI } from 'semantic-ui-react'
 import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
-
-console.log(Comment)
 
 class App extends Component {
   constructor(props) {
@@ -52,7 +51,7 @@ class App extends Component {
       this.getVideoData(videoId)
       this.searchComments(videoId)
     } else {
-      this.setState({ videoData: null })
+      this.setState({ videoData: null, comments: [] })
     }
   }
 
@@ -106,7 +105,7 @@ class App extends Component {
             Copia la url del video que deseas obtener los comentarios.
           </Header>
           <Segment.Inline>
-            <SearchBar placeholder="Url de Youtube" onChange={this.onBoxChange}/>
+            <SearchBar placeholder="Url de Youtube" onChange={debounce(this.onBoxChange, 400)}/>
           </Segment.Inline>
           {modalError && (
             <Message negative>
