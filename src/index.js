@@ -3,7 +3,7 @@ import ReactDom from 'react-dom'
 import fetch from 'node-fetch'
 import moment from 'moment'
 import debounce from 'debounce'
-import { Card, Container, Grid, Header, Icon, Image, Segment, Comment as CommentUI } from 'semantic-ui-react'
+import { Button, Loader, Card, Container, Grid, Header, Icon, Image, Segment, Comment as CommentUI } from 'semantic-ui-react'
 import SearchBar from './components/SearchBar/SearchBar'
 import Comment from './components/Comment/Comment'
 
@@ -14,6 +14,8 @@ class App extends Component {
       comments: [],
       modalError: false,
       videoData: null,
+      commentLoader: false,
+      showMenu: false
     }
   }
 
@@ -50,6 +52,7 @@ class App extends Component {
     if (videoId) {
       this.getVideoData(videoId)
       this.searchComments(videoId)
+      this.setState({ commentLoader: true })
     } else {
       this.setState({ videoData: null, comments: [] })
     }
@@ -89,6 +92,11 @@ class App extends Component {
         }
         if(data.nextPageToken) {
           this.searchComments(videoId, data.nextPageToken)
+        } else {
+          this.setState({ 
+            commentLoader: false, 
+            showMenu: true 
+          })
         }
       })
       .catch((error) => {
@@ -99,7 +107,7 @@ class App extends Component {
   cerrarVentana = () => (this.setState({ modalError: False }))
 
   render() {
-    const { comments, videoData, modalError} = this.state
+    const { comments, videoData, modalError, commentLoader, showMenu} = this.state
     return (
       <Fragment>
         <Segment placeholder inverted>
@@ -118,8 +126,13 @@ class App extends Component {
         </Segment>
         <Container>
           <Grid centered>
-            {videoData && (
+            {commentLoader && (
               <Grid.Row centered>
+                <Loader active inline='centered'>Loading all the comments</Loader>
+              </Grid.Row>
+            )}
+            {videoData && (
+              <Grid.Row centered columns={2}>
                 <Grid.Column textAlign="center" mobile={16} computer={6} >
                   <Card.Group centered>
                     <Card>
@@ -133,9 +146,17 @@ class App extends Component {
                     </Card>
                   </Card.Group>
                 </Grid.Column>
+                {showMenu && (
+                  <Grid.Column>
+                    <Button.Group>
+                      <Button>Comentario al azar</Button>
+                      <Button.Or />
+                      <Button positive>Seleccionar comentario</Button>
+                    </Button.Group>
+                  </Grid.Column>                     
+                )}
               </Grid.Row>
             )}
-            <Grid.Row centered>
               <Grid.Column mobile={16} tablet={14} computer={10}>
                 <CommentUI.Group centered>
                   {comments.map((comment) => (
@@ -148,7 +169,6 @@ class App extends Component {
                   ))}
                 </CommentUI.Group>
               </Grid.Column>
-            </Grid.Row>
           </Grid>
         </Container>
       </Fragment>
