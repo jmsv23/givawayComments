@@ -15,7 +15,8 @@ class App extends Component {
       modalError: false,
       videoData: null,
       commentLoader: false,
-      showMenu: false
+      showMenu: false,
+      showCommentWinner: null
     }
   }
 
@@ -52,9 +53,9 @@ class App extends Component {
     if (videoId) {
       this.getVideoData(videoId)
       this.searchComments(videoId)
-      this.setState({ commentLoader: true })
+      this.setState({ commentLoader: true, showCommentWinner: null })
     } else {
-      this.setState({ videoData: null, comments: [] })
+      this.setState({ videoData: null, comments: [], showCommentWinner: null })
     }
   }
 
@@ -104,10 +105,15 @@ class App extends Component {
       });
   }
 
+  randomComment = () => {
+    let numberComment = Math.floor(Math.random() * this.state.comments.length)
+    this.setState({ showCommentWinner: this.state.comments[numberComment] })
+  }
+
   cerrarVentana = () => (this.setState({ modalError: False }))
 
   render() {
-    const { comments, videoData, modalError, commentLoader, showMenu} = this.state
+    const { comments, videoData, modalError, commentLoader, showMenu, showCommentWinner} = this.state
     return (
       <Fragment>
         <Segment placeholder inverted>
@@ -148,11 +154,17 @@ class App extends Component {
                 </Grid.Column>
                 {showMenu && (
                   <Grid.Column>
-                    <Button.Group>
-                      <Button>Comentario al azar</Button>
-                      <Button.Or />
-                      <Button positive>Seleccionar comentario</Button>
-                    </Button.Group>
+                    <Button positive onClick={this.randomComment}>Comentario al azar</Button>
+                    {showCommentWinner && (
+                      <CommentUI.Group centered>
+                        <Comment
+                          name={showCommentWinner.name}
+                          text={showCommentWinner.text}
+                          avatar={showCommentWinner.avatar}
+                          published={showCommentWinner.published}
+                        />
+                      </CommentUI.Group>
+                    )}
                   </Grid.Column>                     
                 )}
               </Grid.Row>

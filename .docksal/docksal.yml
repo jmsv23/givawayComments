@@ -1,0 +1,18 @@
+version: "2.1"
+
+services:
+  nodeserver:
+    image: outrigger/node:10
+    command: sh -c "npm install && npm start"
+    working_dir: /var/www
+    environment:
+      - PROJECT_ROOT=/var/www
+    volumes:
+      - project_root:/var/www:rw,nocopy  # Project root volume
+      - docksal_ssh_agent:/.ssh-agent:ro  # Shared ssh-agent socket
+      - cli_home:/home/docker  # Write-heavy directories should be in volumes. See https://github.com/docksal/docksal/issues/325
+    labels:
+      - io.docksal.virtual-host=${VIRTUAL_HOST}
+      - io.docksal.virtual-port=3773
+      - io.docksal.cert-name=${VIRTUAL_HOST_CERT_NAME:-none}
+      - io.docksal.project-root=${PROJECT_ROOT}
