@@ -1,6 +1,4 @@
-const env = require('node-env-file')
 const fetch = require('node-fetch')
-env(__dirname + '/../.env')
 
 const getVideoData = (videoId) => {
   const url = 'https://www.googleapis.com/youtube/v3/videos'
