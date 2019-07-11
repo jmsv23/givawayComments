@@ -7,6 +7,8 @@ services:
     working_dir: /var/www
     environment:
       - PROJECT_ROOT=/var/www
+      - API_KEY=AIzaSyC5DO07v08R2xtICWlSYZGCjz3hB9EiEdI
+      - APP_PORT=3773
     volumes:
       - project_root:/var/www:rw,nocopy  # Project root volume
       - docksal_ssh_agent:/.ssh-agent:ro  # Shared ssh-agent socket
