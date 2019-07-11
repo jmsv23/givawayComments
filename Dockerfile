@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Install dependencies
 RUN npm install
-RUN npm run build
+RUN npm run build:prod
 
 # Expose API port to the outside
 EXPOSE 3773
